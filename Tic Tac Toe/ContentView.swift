@@ -16,7 +16,7 @@ enum playState {
     case tiedGame
 }
 
-
+// Main View containing all subviews - keep this light
 struct ContentView: View {
     
     @State private var currentPlayState = playState.playerTurn
