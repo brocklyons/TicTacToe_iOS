@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		959AB4C325243CE90055A25B /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959AB4C225243CE90055A25B /* GameView.swift */; };
 		95B2053F252187E8008FF4E1 /* Tic_Tac_ToeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B2053E252187E8008FF4E1 /* Tic_Tac_ToeApp.swift */; };
 		95B20541252187E8008FF4E1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B20540252187E8008FF4E1 /* ContentView.swift */; };
 		95B20543252187E8008FF4E1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 95B20542252187E8008FF4E1 /* Assets.xcassets */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		959AB4C225243CE90055A25B /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		95B2053B252187E8008FF4E1 /* Tic Tac Toe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Tic Tac Toe.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		95B2053E252187E8008FF4E1 /* Tic_Tac_ToeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tic_Tac_ToeApp.swift; sourceTree = "<group>"; };
 		95B20540252187E8008FF4E1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -56,6 +58,7 @@
 			children = (
 				95B2053E252187E8008FF4E1 /* Tic_Tac_ToeApp.swift */,
 				95B20540252187E8008FF4E1 /* ContentView.swift */,
+				959AB4C225243CE90055A25B /* GameView.swift */,
 				95B2054D25218E6D008FF4E1 /* MoveSpace.swift */,
 				95B20542252187E8008FF4E1 /* Assets.xcassets */,
 				95B20547252187E8008FF4E1 /* Info.plist */,
@@ -143,6 +146,7 @@
 			files = (
 				95B20541252187E8008FF4E1 /* ContentView.swift in Sources */,
 				95B2053F252187E8008FF4E1 /* Tic_Tac_ToeApp.swift in Sources */,
+				959AB4C325243CE90055A25B /* GameView.swift in Sources */,
 				95B2054E25218E6D008FF4E1 /* MoveSpace.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
