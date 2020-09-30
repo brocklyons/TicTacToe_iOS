@@ -17,6 +17,10 @@ enum playState {
 }
 
 struct GameView: View {
+    
+    // Presentation mode we use for the back button to return to the main menu
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    
     @State private var currentPlayState = playState.playerTurn
     @State private var spaces = Array(repeating: 0, count: 9)
     @State private var playAgainHidden = true
@@ -26,6 +30,8 @@ struct GameView: View {
         ZStack {
             BackgroundView()
             
+            BackToMainMenuButton(presentationMode: presentationMode)
+
             VStack {
                 TitleView()
                 
@@ -42,8 +48,12 @@ struct GameView: View {
                     spaces: $spaces,
                     currentPlayState: $currentPlayState,
                     playAgainHidden: $playAgainHidden)
+                Spacer()
             }
         }
+        .navigationBarTitle("")
+        .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true)
     }
 }
 
@@ -65,6 +75,33 @@ struct BackgroundView: View {
 }
 
 
+struct BackToMainMenuButton: View {
+    
+    @Binding var presentationMode: PresentationMode
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Button(action: {
+                    self.$presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "arrowshape.turn.up.left.fill")
+                        .resizable()
+                        .frame(width: 50, height: 40, alignment: .center)
+                        .aspectRatio(contentMode: .fit)
+                        .foregroundColor(.white)
+                        .opacity(0.5)
+                }
+                .padding(.leading, 20)
+                Spacer()
+            }
+            
+            Spacer()
+        }
+    }
+}
+
+
 struct TitleView: View {
     var body: some View {
         // TODO: Replace this with a title graphic
@@ -74,6 +111,7 @@ struct TitleView: View {
             .fontWeight(.bold)
             .multilineTextAlignment(.leading)
             .padding(.bottom, 50)
+            .padding(.top, 100)
     }
 }
 
