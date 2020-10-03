@@ -15,7 +15,7 @@ My first iOS app to be submitted to the app store officially, which utilizes Swi
 - [ ] Implement UX changes for dual player
 - [ ] Create and implement "dumb" AI for single player
 - [ ] Improve "dumb" AI to be semi-smart when making moves
-- [ ] Highlight winning or losing sequence of spaces in green/red on end-game
+- [X] Highlight winning or losing sequence of spaces in green/red on end-game
 - [ ] Add some sound effects into the game
 - [ ] Add some royale-free background music into the game (?)
 - [ ] Exclude iPad as a supported device for this app

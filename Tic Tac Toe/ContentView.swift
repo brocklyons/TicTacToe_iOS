@@ -21,7 +21,7 @@ struct ContentView: View {
                     TitleView()
 
                     MenuButton(label: "Single Player", color: Color.green, load: AnyView(GameView()))
-                    MenuButton(label: "Multilayer", color: Color.gray, load: AnyView(GameView()))
+                    MenuButton(label: "Multiplayer", color: Color.gray, load: AnyView(GameView()))
                     Spacer()
                 }
             }

@@ -23,6 +23,7 @@ struct GameView: View {
     
     @State private var currentPlayState = playState.playerTurn
     @State private var spaces = Array(repeating: 0, count: 9)
+    @State private var spaceHighlighting = Array(repeating: 0, count: 9) // 0 - no highlight, 1 - green, 2 - red
     @State private var playAgainHidden = true
     
     var body: some View {
@@ -40,12 +41,14 @@ struct GameView: View {
 
                     GameBoardView(
                         spaces: $spaces,
+                        spaceHighlighting: $spaceHighlighting,
                         currentPlayState: $currentPlayState,
                         playAgainHidden: $playAgainHidden)
                 }
                 
                 PlayAgainButton(
                     spaces: $spaces,
+                    spaceHighlighting: $spaceHighlighting,
                     currentPlayState: $currentPlayState,
                     playAgainHidden: $playAgainHidden)
                 Spacer()
@@ -54,6 +57,12 @@ struct GameView: View {
         .navigationBarTitle("")
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
+    }
+}
+
+struct GameView_Previews: PreviewProvider {
+    static var previews: some View {
+        GameView()
     }
 }
 
@@ -197,6 +206,7 @@ struct StateLabel: View {
 struct GameBoardView: View {
     
     @Binding var spaces: Array<Int>
+    @Binding var spaceHighlighting: Array<Int>
     @Binding var currentPlayState: playState
     @Binding var playAgainHidden: Bool
     
@@ -212,16 +222,19 @@ struct GameBoardView: View {
             VStack {
                 BoardRowView(
                     spaces: $spaces,
+                    spaceHighlighting: $spaceHighlighting,
                     currentPlayState: $currentPlayState,
                     playAgainHidden: $playAgainHidden,
                     rowIndices: [0, 1 ,2])
                 BoardRowView(
                     spaces: $spaces,
+                    spaceHighlighting: $spaceHighlighting,
                     currentPlayState: $currentPlayState,
                     playAgainHidden: $playAgainHidden,
                     rowIndices: [3, 4 ,5])
                 BoardRowView(
                     spaces: $spaces,
+                    spaceHighlighting: $spaceHighlighting,
                     currentPlayState: $currentPlayState,
                     playAgainHidden: $playAgainHidden,
                     rowIndices: [6, 7 ,8])
@@ -236,6 +249,7 @@ struct GameBoardView: View {
 struct BoardRowView: View {
     
     @Binding var spaces: Array<Int>
+    @Binding var spaceHighlighting: Array<Int>
     @Binding var currentPlayState: playState
     @Binding var playAgainHidden: Bool
     let rowIndices: Array<Int>
@@ -244,16 +258,19 @@ struct BoardRowView: View {
         HStack {
             MoveSpace(
                 spaces: $spaces,
+                spaceHighlighting: $spaceHighlighting,
                 currentPlayState: $currentPlayState,
                 playAgainHidden: $playAgainHidden,
                 thisSpace: rowIndices[0])
             MoveSpace(
                 spaces: $spaces,
+                spaceHighlighting: $spaceHighlighting,
                 currentPlayState: $currentPlayState,
                 playAgainHidden: $playAgainHidden,
                 thisSpace: rowIndices[1])
             MoveSpace(
                 spaces: $spaces,
+                spaceHighlighting: $spaceHighlighting,
                 currentPlayState: $currentPlayState,
                 playAgainHidden: $playAgainHidden,
                 thisSpace: rowIndices[2])
@@ -265,6 +282,7 @@ struct BoardRowView: View {
 struct PlayAgainButton: View {
     
     @Binding var spaces: Array<Int>
+    @Binding var spaceHighlighting: Array<Int>
     @Binding var currentPlayState: playState
     @Binding var playAgainHidden: Bool
     
@@ -283,6 +301,7 @@ struct PlayAgainButton: View {
             .onTapGesture(perform: {
                 // Reset the board and start the player's turn
                 spaces = Array(repeating: 0, count: 9)
+                spaceHighlighting = Array(repeating: 0, count: 9)
                 currentPlayState = playState.playerTurn
                 playAgainHidden = true
             })
@@ -299,11 +318,5 @@ extension View {
         } else {
             self
         }
-    }
-}
-
-struct GameView_Previews: PreviewProvider {
-    static var previews: some View {
-        GameView()
     }
 }
