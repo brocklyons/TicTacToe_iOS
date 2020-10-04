@@ -254,6 +254,12 @@ struct GameBoardView: View {
     
     let gameMode: GameMode
     
+    let rowIndices = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8]
+    ]
+    
     var body: some View {
         
         ZStack {
@@ -264,27 +270,15 @@ struct GameBoardView: View {
                 .hidden()
             
             VStack {
-                BoardRowView(
-                    spaces: $spaces,
-                    spaceHighlighting: $spaceHighlighting,
-                    currentPlayState: $currentPlayState,
-                    playAgainHidden: $playAgainHidden,
-                    gameMode: gameMode,
-                    rowIndices: [0, 1 ,2])
-                BoardRowView(
-                    spaces: $spaces,
-                    spaceHighlighting: $spaceHighlighting,
-                    currentPlayState: $currentPlayState,
-                    playAgainHidden: $playAgainHidden,
-                    gameMode: gameMode,
-                    rowIndices: [3, 4 ,5])
-                BoardRowView(
-                    spaces: $spaces,
-                    spaceHighlighting: $spaceHighlighting,
-                    currentPlayState: $currentPlayState,
-                    playAgainHidden: $playAgainHidden,
-                    gameMode: gameMode,
-                    rowIndices: [6, 7 ,8])
+                ForEach(rowIndices, id: \.self) { row in
+                    BoardRowView(
+                        spaces: $spaces,
+                        spaceHighlighting: $spaceHighlighting,
+                        currentPlayState: $currentPlayState,
+                        playAgainHidden: $playAgainHidden,
+                        gameMode: gameMode,
+                        rowIndices: row)
+                }
             }
         }
         .padding(.horizontal, 20)
@@ -304,27 +298,15 @@ struct BoardRowView: View {
     
     var body: some View {
         HStack {
-            MoveSpace(
-                spaces: $spaces,
-                spaceHighlighting: $spaceHighlighting,
-                currentPlayState: $currentPlayState,
-                playAgainHidden: $playAgainHidden,
-                thisSpace: rowIndices[0],
-                gameMode: gameMode)
-            MoveSpace(
-                spaces: $spaces,
-                spaceHighlighting: $spaceHighlighting,
-                currentPlayState: $currentPlayState,
-                playAgainHidden: $playAgainHidden,
-                thisSpace: rowIndices[1],
-                gameMode: gameMode)
-            MoveSpace(
-                spaces: $spaces,
-                spaceHighlighting: $spaceHighlighting,
-                currentPlayState: $currentPlayState,
-                playAgainHidden: $playAgainHidden,
-                thisSpace: rowIndices[2],
-                gameMode: gameMode)
+            ForEach(rowIndices, id: \.self) { index in
+                MoveSpace(
+                    spaces: $spaces,
+                    spaceHighlighting: $spaceHighlighting,
+                    currentPlayState: $currentPlayState,
+                    playAgainHidden: $playAgainHidden,
+                    thisSpace: index,
+                    gameMode: gameMode)
+            }
         }.padding(.horizontal, 10)
     }
 }

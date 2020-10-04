@@ -100,7 +100,7 @@ struct SpaceView: View {
                 // Cannot make the a move on a taken space or if the game is over
                 if spaces[thisSpace] == 0 &&
                     (currentPlayState == playState.playerTurn ||
-                        currentPlayState == playState.opponentTurn) {
+                        (currentPlayState == playState.opponentTurn && gameMode == GameMode.multiPlayer)) {
                     
                     if !makeMove() && !spaces.contains(0) {
                         currentPlayState = playState.tiedGame
