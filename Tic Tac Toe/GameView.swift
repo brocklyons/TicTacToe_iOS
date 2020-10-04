@@ -18,6 +18,8 @@ enum playState {
 
 struct GameView: View {
     
+    let gameMode: GameMode
+    
     // Presentation mode we use for the back button to return to the main menu
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
@@ -37,13 +39,14 @@ struct GameView: View {
                 TitleView()
                 
                 ZStack {
-                    PlayerTurnBorder(currentPlayState: currentPlayState)
+                    PlayerTurnBorder(currentPlayState: currentPlayState, gameMode: gameMode)
 
                     GameBoardView(
                         spaces: $spaces,
                         spaceHighlighting: $spaceHighlighting,
                         currentPlayState: $currentPlayState,
-                        playAgainHidden: $playAgainHidden)
+                        playAgainHidden: $playAgainHidden,
+                        gameMode: gameMode)
                 }
                 
                 PlayAgainButton(
@@ -62,7 +65,7 @@ struct GameView: View {
 
 struct GameView_Previews: PreviewProvider {
     static var previews: some View {
-        GameView()
+        GameView(gameMode: GameMode.singlePlayer)
     }
 }
 
@@ -128,6 +131,7 @@ struct TitleView: View {
 struct PlayerTurnBorder: View {
 
     let currentPlayState: playState
+    let gameMode: GameMode
     
     var body: some View {
         
@@ -139,40 +143,80 @@ struct PlayerTurnBorder: View {
                     .opacity(0.75)
                     .cornerRadius(30)
             }
-            else if currentPlayState == playState.opponentTurn {
-                Rectangle()
-                    .foregroundColor(.gray)
-                    .opacity(0.75)
-                    .cornerRadius(30)
+            else if gameMode == GameMode.singlePlayer {
+                if currentPlayState == playState.opponentTurn {
+                    Rectangle()
+                        .foregroundColor(.gray)
+                        .opacity(0.75)
+                        .cornerRadius(30)
+                }
+                else {
+                    Rectangle()
+                        .foregroundColor(.red)
+                        .opacity(0.75)
+                        .cornerRadius(30)
+                }
             }
             else {
-                Rectangle()
-                    .foregroundColor(.red)
-                    .opacity(0.75)
-                    .cornerRadius(30)
+                if currentPlayState != playState.tiedGame {
+                    Rectangle()
+                        .foregroundColor(.purple)
+                        .opacity(0.75)
+                        .cornerRadius(30)
+                }
+                else {
+                    Rectangle()
+                        .foregroundColor(.red)
+                        .opacity(0.75)
+                        .cornerRadius(30)
+                }
             }
             
             VStack {
                 Spacer()
                 
-                if currentPlayState == playState.playerTurn {
-                    StateLabel(label: "Your turn", color: Color.green)
+                if gameMode == GameMode.singlePlayer {
+                    if currentPlayState == playState.playerTurn {
+                        StateLabel(label: "Your turn")
+                    }
+                    else if currentPlayState == playState.opponentTurn {
+                        StateLabel(label: "Opponent's turn")
+                    }
+                    // Game is over, display a result and play again button
+                    else {
+                        // Player wins
+                        if currentPlayState == playState.playerWin {
+                            StateLabel(label: "You win!")
+                        }
+                        // Opponent wins
+                        else if currentPlayState == playState.opponentWin {
+                            StateLabel(label: "You lose!")
+                        }
+                        else if currentPlayState == playState.tiedGame {
+                            StateLabel(label: "Tied game!")
+                        }
+                    }
                 }
-                else if currentPlayState == playState.opponentTurn {
-                    StateLabel(label: "Opponent's turn", color: Color.gray)
-                }
-                // Game is over, display a result and play again button
                 else {
-                    // Player wins
-                    if currentPlayState == playState.playerWin {
-                        StateLabel(label: "You win!", color: Color.green)
+                    if currentPlayState == playState.playerTurn {
+                        StateLabel(label: "Player 1 Turn")
                     }
-                    // Opponent wins
-                    else if currentPlayState == playState.opponentWin {
-                        StateLabel(label: "You lose!", color: Color.red)
+                    else if currentPlayState == playState.opponentTurn {
+                        StateLabel(label: "Player 2 Turn")
                     }
-                    else if currentPlayState == playState.tiedGame {
-                        StateLabel(label: "Tied game!", color: Color.red)
+                    // Game is over, display a result and play again button
+                    else {
+                        // Player wins
+                        if currentPlayState == playState.playerWin {
+                            StateLabel(label: "Player 1 Wins!")
+                        }
+                        // Opponent wins
+                        else if currentPlayState == playState.opponentWin {
+                            StateLabel(label: "Player 2 Wins!")
+                        }
+                        else if currentPlayState == playState.tiedGame {
+                            StateLabel(label: "Tied game!")
+                        }
                     }
                 }
             }
@@ -186,7 +230,6 @@ struct PlayerTurnBorder: View {
 struct StateLabel: View {
     
     let label: String
-    let color: Color
     
     var body: some View {
         Text(label)
@@ -195,7 +238,6 @@ struct StateLabel: View {
             .foregroundColor(.white)
             .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity)
-            .background(color.opacity(0.0))
             .cornerRadius(10)
             .padding(.horizontal, 20)
             .padding(.vertical, 5)
@@ -209,6 +251,8 @@ struct GameBoardView: View {
     @Binding var spaceHighlighting: Array<Int>
     @Binding var currentPlayState: playState
     @Binding var playAgainHidden: Bool
+    
+    let gameMode: GameMode
     
     var body: some View {
         
@@ -225,18 +269,21 @@ struct GameBoardView: View {
                     spaceHighlighting: $spaceHighlighting,
                     currentPlayState: $currentPlayState,
                     playAgainHidden: $playAgainHidden,
+                    gameMode: gameMode,
                     rowIndices: [0, 1 ,2])
                 BoardRowView(
                     spaces: $spaces,
                     spaceHighlighting: $spaceHighlighting,
                     currentPlayState: $currentPlayState,
                     playAgainHidden: $playAgainHidden,
+                    gameMode: gameMode,
                     rowIndices: [3, 4 ,5])
                 BoardRowView(
                     spaces: $spaces,
                     spaceHighlighting: $spaceHighlighting,
                     currentPlayState: $currentPlayState,
                     playAgainHidden: $playAgainHidden,
+                    gameMode: gameMode,
                     rowIndices: [6, 7 ,8])
             }
         }
@@ -252,6 +299,7 @@ struct BoardRowView: View {
     @Binding var spaceHighlighting: Array<Int>
     @Binding var currentPlayState: playState
     @Binding var playAgainHidden: Bool
+    let gameMode: GameMode
     let rowIndices: Array<Int>
     
     var body: some View {
@@ -261,19 +309,22 @@ struct BoardRowView: View {
                 spaceHighlighting: $spaceHighlighting,
                 currentPlayState: $currentPlayState,
                 playAgainHidden: $playAgainHidden,
-                thisSpace: rowIndices[0])
+                thisSpace: rowIndices[0],
+                gameMode: gameMode)
             MoveSpace(
                 spaces: $spaces,
                 spaceHighlighting: $spaceHighlighting,
                 currentPlayState: $currentPlayState,
                 playAgainHidden: $playAgainHidden,
-                thisSpace: rowIndices[1])
+                thisSpace: rowIndices[1],
+                gameMode: gameMode)
             MoveSpace(
                 spaces: $spaces,
                 spaceHighlighting: $spaceHighlighting,
                 currentPlayState: $currentPlayState,
                 playAgainHidden: $playAgainHidden,
-                thisSpace: rowIndices[2])
+                thisSpace: rowIndices[2],
+                gameMode: gameMode)
         }.padding(.horizontal, 10)
     }
 }

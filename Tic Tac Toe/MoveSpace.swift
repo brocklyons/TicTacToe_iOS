@@ -15,6 +15,7 @@ struct MoveSpace: View {
     @Binding var playAgainHidden: Bool
     
     let thisSpace:Int
+    let gameMode: GameMode
     let symbols = ["", "multiply", "circle"]
     
     var body: some View {
@@ -26,6 +27,7 @@ struct MoveSpace: View {
                       spaceHighlighting: $spaceHighlighting,
                       playAgainHidden: $playAgainHidden,
                       thisSpace: thisSpace,
+                      gameMode: gameMode,
                       symbols: symbols,
                       spaceColor: Color.white.opacity(0.5),
                       highlightColor: Color.white.opacity(0.0))
@@ -37,6 +39,7 @@ struct MoveSpace: View {
                       spaceHighlighting: $spaceHighlighting,
                       playAgainHidden: $playAgainHidden,
                       thisSpace: thisSpace,
+                      gameMode: gameMode,
                       symbols: symbols,
                       spaceColor: Color.green,
                       highlightColor: Color.white)
@@ -48,6 +51,7 @@ struct MoveSpace: View {
                       spaceHighlighting: $spaceHighlighting,
                       playAgainHidden: $playAgainHidden,
                       thisSpace: thisSpace,
+                      gameMode: gameMode,
                       symbols: symbols,
                       spaceColor: Color.red,
                       highlightColor: Color.white)
@@ -62,7 +66,8 @@ struct MoveSpace_Previews: PreviewProvider {
             spaceHighlighting: Binding.constant([0,1,2]),
             currentPlayState: Binding.constant(playState.playerTurn),
             playAgainHidden: Binding.constant(true),
-            thisSpace: 0)
+            thisSpace: 0,
+            gameMode: GameMode.singlePlayer)
     }
 }
 
@@ -74,12 +79,14 @@ struct SpaceView: View {
     @Binding var playAgainHidden: Bool
     
     let thisSpace: Int
+    let gameMode: GameMode
     let symbols: Array<String>
     
     let spaceColor: Color
     let highlightColor: Color
     
     var body: some View {
+        
         Image(systemName: symbols[spaces[thisSpace]])
             .resizable()
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
@@ -97,10 +104,57 @@ struct SpaceView: View {
                     
                     if !makeMove() && !spaces.contains(0) {
                         currentPlayState = playState.tiedGame
+                        playAgainHidden = false
+                    }
+                    
+                    // AI makes a move after the player goes
+                    if gameMode == GameMode.singlePlayer && currentPlayState == playState.opponentTurn {
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            // We need to now make an AI move
+                            let moveIndex = findMoveAI(spaces)
+                            if moveIndex != -1 {
+                                spaces[moveIndex] = 2
+                            }
+                            
+                            // Determine whether the AI has just won or not
+                            if calculateBoard(false, moveIndex) {
+                                // AI won, load AI winning end game
+                                currentPlayState = playState.opponentWin
+                                playAgainHidden = false
+                            }
+                            else if spaces.contains(0) {
+                                // AI did not win yet, player's turn
+                                currentPlayState = playState.playerTurn
+                            }
+                            else {
+                                // No spaces left and no winnder, tied game
+                                currentPlayState = playState.tiedGame
+                                playAgainHidden = false
+                            }
+                        }
                     }
                 }
             })
     }
+    
+    func findMoveAI(_ spaces: Array<Int>) -> Int {
+        
+        var availableSpaces = [Int]()
+        for (index, element) in spaces.enumerated() {
+            if element == 0 {
+                availableSpaces.append(index)
+            }
+        }
+        
+        if availableSpaces.count != 0 {
+            return availableSpaces[0] // <--------- For now just returning the fist availbe space, this should be more smart later
+        }
+        else {
+            return -1
+        }
+    }
+    
     
     func makeMove() -> Bool {
         // Player's turn
