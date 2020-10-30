@@ -15,8 +15,8 @@ My first iOS app to be submitted to the app store officially, which utilizes Swi
 - [X] Improve "dumb" AI to be semi-smart by checking for a space that will win it the game first or if it could block a player from winning
 - [X] Highlight winning or losing sequence of spaces in green/red on end-game
 - [X] Exclude iPad as a supported device for this app (only support iPhone)
+- [X] Create an app icon
 - [ ] Polish main menu with custom title image
 - [ ] Create and add custom X and O images
-- [ ] Create an app icon
 - [ ] Add some sound effects into the game
 - [ ] Go through any final things to get the app ready to submit (probably need to do a EULA thing somewhere on my personal site.)
