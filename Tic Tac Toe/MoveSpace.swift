@@ -45,16 +45,30 @@ struct MoveSpace: View {
                       highlightColor: Color.white)
         }
         else if spaceHighlighting[thisSpace] == 2 {
-            // red highlight
-            SpaceView(spaces: $spaces,
-                      currentPlayState: $currentPlayState,
-                      spaceHighlighting: $spaceHighlighting,
-                      playAgainHidden: $playAgainHidden,
-                      thisSpace: thisSpace,
-                      gameMode: gameMode,
-                      symbols: symbols,
-                      spaceColor: Color.red,
-                      highlightColor: Color.white)
+            if gameMode == GameMode.singlePlayer {
+                // red highlight
+                SpaceView(spaces: $spaces,
+                          currentPlayState: $currentPlayState,
+                          spaceHighlighting: $spaceHighlighting,
+                          playAgainHidden: $playAgainHidden,
+                          thisSpace: thisSpace,
+                          gameMode: gameMode,
+                          symbols: symbols,
+                          spaceColor: Color.red,
+                          highlightColor: Color.white)
+            }
+            else if gameMode == GameMode.multiPlayer {
+                // purple highlight
+                SpaceView(spaces: $spaces,
+                          currentPlayState: $currentPlayState,
+                          spaceHighlighting: $spaceHighlighting,
+                          playAgainHidden: $playAgainHidden,
+                          thisSpace: thisSpace,
+                          gameMode: gameMode,
+                          symbols: symbols,
+                          spaceColor: Color.purple,
+                          highlightColor: Color.white)
+            }
         }
     }
 }
@@ -110,7 +124,7 @@ struct SpaceView: View {
                     // AI makes a move after the player goes
                     if gameMode == GameMode.singlePlayer && currentPlayState == playState.opponentTurn {
                         
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             // We need to now make an AI move
                             let moveIndex = findMoveAI(spaces)
                             if moveIndex != -1 {
@@ -148,7 +162,38 @@ struct SpaceView: View {
         }
         
         if availableSpaces.count != 0 {
-            return availableSpaces[0] // <--------- For now just returning the fist availbe space, this should be more smart later
+            
+            // Simple algorithm for choosing a space semi-"intelligently"
+            // 1. Check if any available space will win it the game
+            // 2a - an available space will win it the game --> play that space
+            // 2b - no available space will win it the game --> continue
+            // 3. Check if any available space for the player will win next turn
+            // 3a - a player's available space will win them the game --> play that space
+            // 3b - no player's available space will win them the game --> play a random space
+            
+            // Check for winning spaces
+            for possibleSpace in availableSpaces {
+                // we found a winning space, win the game
+                self.spaces[possibleSpace] = 2
+                if calculateBoard(false, possibleSpace, true) {
+                    return possibleSpace
+                }
+                self.spaces[possibleSpace] = 0
+            }
+            
+            // Check for blocking spaces
+            for possibleSpace in availableSpaces {
+                // we found a blocking space, block the player from winning next round
+                self.spaces[possibleSpace] = 1
+                if calculateBoard(true, possibleSpace, true) {
+                    return possibleSpace
+                }
+                self.spaces[possibleSpace] = 0
+            }
+            
+            // no winning/blocking space found, play a random one
+            let randomSpace = Int.random(in: 0..<availableSpaces.count - 1)
+            return availableSpaces[randomSpace]
         }
         else {
             return -1
@@ -187,7 +232,7 @@ struct SpaceView: View {
     }
     
     
-    func calculateBoard(_ isPlayer:Bool, _ space:Int) -> Bool {
+    func calculateBoard(_ isPlayer:Bool, _ space:Int, _ onlyChecking:Bool = false) -> Bool {
         // Calculate the row and column of the given space
         let row = ((space - (space % 3)) / 3) // gives 0, 1, or 2 as the row
         let col = (space % 3) // gives 0, 1, or 2 as the column
@@ -203,11 +248,12 @@ struct SpaceView: View {
             spaces[startingIndex + 1] == piece &&
             spaces[startingIndex + 2] == piece {
             
-            // Set highlights and change this cell if highlighted
-            spaceHighlighting[startingIndex] = piece
-            spaceHighlighting[startingIndex + 1] = piece
-            spaceHighlighting[startingIndex + 2] = piece
-            
+            if !onlyChecking {
+                // Set highlights and change this cell if highlighted
+                spaceHighlighting[startingIndex] = piece
+                spaceHighlighting[startingIndex + 1] = piece
+                spaceHighlighting[startingIndex + 2] = piece
+            }
             return true
         }
         
@@ -216,11 +262,12 @@ struct SpaceView: View {
             spaces[col + 3] == piece &&
             spaces[col + 6] == piece {
             
-            // Set highlights and change this cell if highlighted
-            spaceHighlighting[col] = piece
-            spaceHighlighting[col + 3] = piece
-            spaceHighlighting[col + 6] = piece
-            
+            if !onlyChecking {
+                // Set highlights and change this cell if highlighted
+                spaceHighlighting[col] = piece
+                spaceHighlighting[col + 3] = piece
+                spaceHighlighting[col + 6] = piece
+            }
             return true
         }
         
@@ -231,22 +278,24 @@ struct SpaceView: View {
                 spaces[4] == piece &&
                 spaces[8] == piece {
                 
-                // Set highlights and change this cell if highlighted
-                spaceHighlighting[0] = piece
-                spaceHighlighting[4] = piece
-                spaceHighlighting[8] = piece
-                
+                if !onlyChecking {
+                    // Set highlights and change this cell if highlighted
+                    spaceHighlighting[0] = piece
+                    spaceHighlighting[4] = piece
+                    spaceHighlighting[8] = piece
+                }
                 return true
             }
             else if spaces[2] == piece &&
                     spaces[4] == piece &&
                     spaces[6] == piece {
                 
-                // Set highlights and change this cell if highlighted
-                spaceHighlighting[2] = piece
-                spaceHighlighting[4] = piece
-                spaceHighlighting[6] = piece
-                
+                if !onlyChecking {
+                    // Set highlights and change this cell if highlighted
+                    spaceHighlighting[2] = piece
+                    spaceHighlighting[4] = piece
+                    spaceHighlighting[6] = piece
+                }
                 return true
             }
         }

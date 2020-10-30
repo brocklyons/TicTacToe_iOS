@@ -166,7 +166,7 @@ struct PlayerTurnBorder: View {
                 }
                 else {
                     Rectangle()
-                        .foregroundColor(.red)
+                        .foregroundColor(.gray)
                         .opacity(0.75)
                         .cornerRadius(30)
                 }
@@ -199,20 +199,20 @@ struct PlayerTurnBorder: View {
                 }
                 else {
                     if currentPlayState == playState.playerTurn {
-                        StateLabel(label: "Player 1 Turn")
+                        StateLabel(label: "X's Turn")
                     }
                     else if currentPlayState == playState.opponentTurn {
-                        StateLabel(label: "Player 2 Turn")
+                        StateLabel(label: "O's Turn")
                     }
                     // Game is over, display a result and play again button
                     else {
                         // Player wins
                         if currentPlayState == playState.playerWin {
-                            StateLabel(label: "Player 1 Wins!")
+                            StateLabel(label: "X Wins!")
                         }
                         // Opponent wins
                         else if currentPlayState == playState.opponentWin {
-                            StateLabel(label: "Player 2 Wins!")
+                            StateLabel(label: "O Wins!")
                         }
                         else if currentPlayState == playState.tiedGame {
                             StateLabel(label: "Tied game!")
