@@ -14,8 +14,9 @@ struct MoveSpace: View {
     @Binding var currentPlayState: playState
     @Binding var playAgainHidden: Bool
     
-    let thisSpace:Int
-    let gameMode: GameMode
+    let thisSpace:Int       // 0 - not taken, 1 - player/player1, 2 - AI/player2
+    let gameMode: GameMode  // singlePlayer or multiPlayer
+    
     let symbols = ["", "multiply", "circle"]
     
     var body: some View {
@@ -92,10 +93,10 @@ struct SpaceView: View {
     @Binding var spaceHighlighting: Array<Int>
     @Binding var playAgainHidden: Bool
     
-    let thisSpace: Int
-    let gameMode: GameMode
-    let symbols: Array<String>
+    let thisSpace: Int      // 0 - not taken, 1 - player/player1, 2 - AI/player2
+    let gameMode: GameMode  // singlePlayer or multiPlayer
     
+    let symbols: Array<String>
     let spaceColor: Color
     let highlightColor: Color
     
@@ -116,7 +117,7 @@ struct SpaceView: View {
                     (currentPlayState == playState.playerTurn ||
                         (currentPlayState == playState.opponentTurn && gameMode == GameMode.multiPlayer)) {
                     
-                    if !makeMove() && !spaces.contains(0) {
+                    if !makeMoveAndCheckOutcome() && !spaces.contains(0) {
                         currentPlayState = playState.tiedGame
                         playAgainHidden = false
                     }
@@ -126,9 +127,12 @@ struct SpaceView: View {
                         
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             // We need to now make an AI move
-                            let moveIndex = findMoveAI(spaces)
+                            let moveIndex = determineAIMove(spaces)
                             if moveIndex != -1 {
                                 spaces[moveIndex] = 2
+                            }
+                            else {
+                                print("Error code returned from determining AI move.")
                             }
                             
                             // Determine whether the AI has just won or not
@@ -142,7 +146,7 @@ struct SpaceView: View {
                                 currentPlayState = playState.playerTurn
                             }
                             else {
-                                // No spaces left and no winnder, tied game
+                                // No spaces left and no winner, tied game
                                 currentPlayState = playState.tiedGame
                                 playAgainHidden = false
                             }
@@ -152,8 +156,8 @@ struct SpaceView: View {
             })
     }
     
-    func findMoveAI(_ spaces: Array<Int>) -> Int {
-        
+    func determineAIMove(_ spaces: Array<Int>) -> Int {
+        // find all available spaces left on the board to play
         var availableSpaces = [Int]()
         for (index, element) in spaces.enumerated() {
             if element == 0 {
@@ -166,7 +170,7 @@ struct SpaceView: View {
             // Simple algorithm for choosing a space semi-"intelligently"
             // 1. Check if any available space will win it the game
             // 2a - an available space will win it the game --> play that space
-            // 2b - no available space will win it the game --> continue
+            // 2b - no available space will win it the game --> continue to next step
             // 3. Check if any available space for the player will win next turn
             // 3a - a player's available space will win them the game --> play that space
             // 3b - no player's available space will win them the game --> play a random space
@@ -196,12 +200,12 @@ struct SpaceView: View {
             return availableSpaces[randomSpace]
         }
         else {
-            return -1
+            return -1  // should never get here, but return an error code just in case
         }
     }
     
     
-    func makeMove() -> Bool {
+    func makeMoveAndCheckOutcome() -> Bool {
         // Player's turn
         if currentPlayState == playState.playerTurn {
             spaces[thisSpace] = 1
