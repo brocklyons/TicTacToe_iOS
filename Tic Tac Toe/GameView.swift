@@ -116,14 +116,11 @@ struct BackToMainMenuButton: View {
 
 struct TitleView: View {
     var body: some View {
-        // TODO: Replace this with a title graphic
-        Text("Tic\n\t\tTac\n\t\t\t\tToe")
-            .foregroundColor(.white)
-            .font(.largeTitle)
-            .fontWeight(.bold)
-            .multilineTextAlignment(.leading)
-            .padding(.bottom, 50)
-            .padding(.top, 100)
+        Image("TicTacToe_Title")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: UIScreen.main.bounds.width * 0.6)
+            .padding()
     }
 }
 

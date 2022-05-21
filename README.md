@@ -16,7 +16,7 @@ My first iOS app to be submitted to the app store officially, which utilizes Swi
 - [X] Highlight winning or losing sequence of spaces in green/red on end-game
 - [X] Exclude iPad as a supported device for this app (only support iPhone)
 - [X] Create an app icon
-- [ ] Polish main menu with custom title image
-- [ ] Create and add custom X and O images
+- [X] Polish main menu with custom title image
+- [X] Create and add custom X and O images
 - [ ] Add some sound effects into the game
 - [ ] Go through any final things to get the app ready to submit (probably need to do a EULA thing somewhere on my personal site.)

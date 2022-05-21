@@ -17,7 +17,7 @@ struct MoveSpace: View {
     let thisSpace:Int       // 0 - not taken, 1 - player/player1, 2 - AI/player2
     let gameMode: GameMode  // singlePlayer or multiPlayer
     
-    let symbols = ["", "multiply", "circle"]
+    let symbols = ["No-mark", "X-mark", "O-mark"]
     
     var body: some View {
         
@@ -102,12 +102,14 @@ struct SpaceView: View {
     
     var body: some View {
         
-        Image(systemName: symbols[spaces[thisSpace]])
+        Image(symbols[spaces[thisSpace]])
             .resizable()
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             .aspectRatio(1.0, contentMode: .fit)
             .background(spaceColor)
-            .border(highlightColor, width: 5)
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(highlightColor, lineWidth: 10))
             .cornerRadius(10)
             .padding(5)
             .foregroundColor(.black)

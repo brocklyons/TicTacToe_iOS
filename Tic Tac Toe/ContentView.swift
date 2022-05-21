@@ -24,10 +24,16 @@ struct ContentView: View {
                 
                 VStack {
                     TitleView()
+                    
+                    Spacer()
 
                     MenuButton(label: "1 Player", color: Color.green, load: AnyView(GameView(gameMode: GameMode.singlePlayer)), gameMode: GameMode.singlePlayer)
                     MenuButton(label: "2 Player", color: Color.purple, load: AnyView(GameView(gameMode: GameMode.multiPlayer)), gameMode: GameMode.multiPlayer)
                     Spacer()
+                    Image("Signature")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: UIScreen.main.bounds.width * 0.5)
                 }
             }
             .navigationBarTitle("")
@@ -86,9 +92,11 @@ struct MenuButton: View {
                 .frame(width: 250, height: 115, alignment: .center)
                 .foregroundColor(.white)
                 .background(color)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(.white, lineWidth: 5))
             })
             .cornerRadius(10)
-            .animation(.easeInOut)
             .padding(.bottom)
     }
 }
