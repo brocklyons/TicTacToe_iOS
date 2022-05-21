@@ -18,5 +18,4 @@ My first iOS app to be submitted to the app store officially, which utilizes Swi
 - [X] Create an app icon
 - [X] Polish main menu with custom title image
 - [X] Create and add custom X and O images
-- [ ] Add some sound effects into the game
 - [ ] Go through any final things to get the app ready to submit (probably need to do a EULA thing somewhere on my personal site.)
